@@ -8,7 +8,7 @@
 	"require": {
 		"php": "^7.0",
 		"kdyby/events": "~3.0",
-		"knplabs/doctrine-behaviors": "~1.4",
+		"knplabs/doctrine-behaviors": "1.4.0",
 		"tracy/tracy": "~2.4"
 	},
 	"require-dev": {
