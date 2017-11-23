@@ -3,7 +3,8 @@
 	"description": "Integration of KnpLabs/DoctrineBehaviors to Nette\\DI",
 	"license": "MIT",
 	"authors": [
-		{ "name": "Tomáš Votruba", "homepage": "http://tomasvotruba.cz" }
+		{ "name": "Tomáš Votruba", "homepage": "http://tomasvotruba.cz" },
+		{ "name": "Clear01 Development", "homepage": "http://clear01.com"}
 	],
 	"require": {
 		"php": "^7.0",
@@ -23,7 +24,8 @@
 	},
 	"autoload": {
 		"psr-4": {
-			"Zenify\\DoctrineBehaviors\\": "src"
+			"Zenify\\DoctrineBehaviors\\": "src",
+			"Clear01\\DoctrineBehaviors\\": "src"
 		}
 	},
 	"autoload-dev": {
