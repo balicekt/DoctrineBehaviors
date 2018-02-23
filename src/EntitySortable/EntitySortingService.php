@@ -1,6 +1,6 @@
 <?php
 
-namespace Clear01\DoctrineBehaviors\Sortable;
+namespace Clear01\DoctrineBehaviors\EntitySortable;
 
 use Doctrine\Common\Collections\Criteria;
 
@@ -59,7 +59,7 @@ class EntitySortingService
 			} elseif ($targetEntityPosition->getPosition() > $entityPosition->getPosition()) {
 				// moving down
 				$this->em->createQuery('
-					UPDATE ' . EntityPosition::class . ' ep SET ep.position = ep.position - 1 WHERE ep.scope = :scope AND ep.position > :minPositionThreshold AMD ep.position <= :maxPositionThreshold 
+					UPDATE ' . EntityPosition::class . ' ep SET ep.position = ep.position - 1 WHERE ep.scope = :scope AND ep.position > :minPositionThreshold AND ep.position <= :maxPositionThreshold 
 				')->execute(['scope' => $scope, 'minPositionThreshold' => $entityPosition->getPosition(), 'maxPositionThreshold' => $targetEntityPosition->getPosition()]);
 				$this->em->createQuery('
 					UPDATE ' . EntityPosition::class . ' ep SET ep.position = :newPosition WHERE ep.scope = :scope AND ep.entityId = :entityId 
@@ -67,7 +67,7 @@ class EntitySortingService
 			} else {
 				// moving up
 				$this->em->createQuery('
-					UPDATE ' . EntityPosition::class . ' ep SET ep.position = ep.position + 1 WHERE ep.scope = :scope AND ep.position >= :minPositionThreshold AMD ep.position < :maxPositionThreshold 
+					UPDATE ' . EntityPosition::class . ' ep SET ep.position = ep.position + 1 WHERE ep.scope = :scope AND ep.position >= :minPositionThreshold AND ep.position < :maxPositionThreshold 
 				')->execute(['scope' => $scope, 'minPositionThreshold' => $targetEntityPosition->getPosition(), 'maxPositionThreshold' => $entityPosition->getPosition()]);
 				$this->em->createQuery('
 					UPDATE ' . EntityPosition::class . ' ep SET ep.position = :newPosition WHERE ep.scope = :scope AND ep.entityId = :entityId 

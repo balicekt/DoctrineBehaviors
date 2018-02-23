@@ -1,6 +1,6 @@
 <?php
 
-namespace Clear01\DoctrineBehaviors\Sortable;
+namespace Clear01\DoctrineBehaviors\EntitySortable;
 
 use Doctrine\ORM\Mapping as ORM;
 

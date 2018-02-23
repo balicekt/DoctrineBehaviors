@@ -1,28 +1,53 @@
 <?php
+declare(strict_types = 1);
 
 namespace Clear01\DoctrineBehaviors\DI;
 
-use Clear01\DoctrineBehaviors\Sortable\EntitySortingService;
-use Kdyby\Doctrine\DI\IEntityProvider;
-use Nette\DI\CompilerExtension;
+use Clear01\DoctrineBehaviors\Sortable\EntitySortingHandler;
+use Kdyby\Events\DI\EventsExtension;
+use Knp\DoctrineBehaviors\Model\Sortable\Sortable;
+use Knp\DoctrineBehaviors\ORM\Sortable\SortableSubscriber;
+use Nette\Utils\AssertionException;
+use Nette\Utils\Validators;
+use Zenify\DoctrineBehaviors\DI\AbstractBehaviorExtension;
 
-class SortableExtension extends CompilerExtension implements IEntityProvider
+final class SortableExtension extends AbstractBehaviorExtension
 {
-	public function beforeCompile()
-	{
-		parent::beforeCompile();
-		$this->getContainerBuilder()->addDefinition($this->prefix('entitySortingService'))
-			->setType(EntitySortingService::class);
-	}
+	/**
+	 * @var array
+	 */
+	private $default = [
+		'isRecursive' => TRUE,
+		'trait' => Sortable::class
+	];
 
 
 	/**
-	 * Returns associative array of Namespace => mapping definition
-	 *
-	 * @return array
+	 * @throws AssertionException
 	 */
-	function getEntityMappings()
+	public function loadConfiguration()
 	{
-		return ['Clear01\DoctrineBehaviors\Sortable' => dirname(__DIR__) . '/Sortable'];
+
+		$config = $this->getConfig($this->default);
+		$this->validateConfigTypes($config);
+		$builder = $this->getContainerBuilder();
+
+		$builder->addDefinition($this->prefix('listener'))
+		        ->setFactory(SortableSubscriber::class, [
+			        '@' . $this->getClassAnalyzer()->getClass(),
+			        $config['isRecursive'],
+			        $config['trait']
+		        ])
+		        ->setAutowired(FALSE)
+		        ->addTag(EventsExtension::TAG_SUBSCRIBER);
+	}
+
+	/**
+	 * @throws AssertionException
+	 */
+	private function validateConfigTypes(array $config)
+	{
+		Validators::assertField($config, 'isRecursive', 'bool');
+		Validators::assertField($config, 'trait', 'type');
 	}
 }
