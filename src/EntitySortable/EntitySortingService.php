@@ -36,6 +36,9 @@ class EntitySortingService
 			if(!$targetEntityPosition) {
 				throw new \RuntimeException(sprintf('Entity position for entity with ID %d under scope %s not found!', $targetEntityId, $scope));
 			}
+			if($targetEntityPosition->getPosition() > $entityPosition->getPosition()) {
+				$targetEntityPosition = $this->em->getRepository(EntityPosition::class)->findOneBy(['position <' => $targetEntityPosition->getPosition(), 'scope' => $scope], ['position' => 'DESC']);
+			}
 		} else {
 			$targetEntityPosition = null;
 		}
@@ -87,14 +90,16 @@ class EntitySortingService
 			$qb = $this->em->createQueryBuilder()
 				->select('e.id as id, ep.entityId')
 				->from($entityClass, 'e')
-				->leftJoin(EntityPosition::class, 'ep', Join::WITH, 'ep.entityId = e.id')
+				->leftJoin(EntityPosition::class, 'ep', Join::WITH, 'ep.entityId = e.id AND ep.scope = :scope')
 				->where('ep.entityId IS NULL');
 			foreach($sortBy as $col => $dir) {
 				$qb->addOrderBy('e.' . $col, $dir);
 			}
+			$qb->setParameter('scope', $scope);
 			$q = $qb->getQuery();
 			$position = $this->em->createQuery('SELECT max(ep.position) FROM ' . EntityPosition::class . ' ep WHERE ep.scope = :scope')
 				->setParameters(['scope' => $scope])->getSingleScalarResult();
+
 			foreach($q->getArrayResult() as $result) {
 				$position++;
 				$ep = new EntityPosition(
@@ -117,5 +122,21 @@ class EntitySortingService
 		$queryBuilder->leftJoin(EntityPosition::class, 'ep', Join::WITH, 'ep.entityId = ' . $entityAlias . '.id AND ep.scope = :scope')
 			->setParameter('scope', $scope)
 			->addOrderBy('ep.position', $direction);
+	}
+
+	/**
+	 * Sorts an array by its keys
+	 */
+	public function sortArray($items, string $scope) : array {
+		$priorities = [];
+		foreach($this->em->getRepository(EntityPosition::class)->findBy(['scope' => $scope]) as $ep) {
+			/** @var $ep EntityPosition */
+			$priorities[$ep->getEntityId()] = $ep->getPosition();
+		}
+		uksort($items, function($a, $b) use ($priorities) {
+			return (isset($priorities[$a]) ? $priorities[$a] : PHP_INT_MAX - 1)
+				- (isset($priorities[$b]) ? $priorities[$b] : PHP_INT_MAX - 1);
+		});
+		return $items;
 	}
 }
