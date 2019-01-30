@@ -1,15 +1,15 @@
 {
-	"name": "clear01/doctrine-behaviors",
+	"name": "balicekt/doctrine-behaviors",
 	"description": "Integration of KnpLabs/DoctrineBehaviors to Nette\\DI",
 	"license": "MIT",
 	"authors": [
 		{ "name": "Tomáš Votruba", "homepage": "http://tomasvotruba.cz" },
-		{ "name": "Clear01 Development", "homepage": "http://clear01.com"}
+		{ "name": "Tomas Balicek"}
 	],
 	"require": {
-		"php": "^7.0",
+		"php": ">=7.1.0",
 		"kdyby/events": "~3.0",
-		"knplabs/doctrine-behaviors": "1.4.0",
+		"knplabs/doctrine-behaviors": "~1.6",
 		"tracy/tracy": "~2.4"
 	},
 	"require-dev": {
@@ -24,16 +24,12 @@
 	},
 	"autoload": {
 		"psr-4": {
-			"Zenify\\DoctrineBehaviors\\": "src",
-			"Clear01\\DoctrineBehaviors\\": "src"
+			"balicekt\\DoctrineBehaviors\\": "src"
 		}
 	},
 	"autoload-dev": {
 		"psr-4": {
-			"Zenify\\DoctrineBehaviors\\Tests\\": "tests"
+			"balicekt\\DoctrineBehaviors\\Tests\\": "tests"
 		}
-	},
-	"scripts": {
-		"check-cs": "vendor/bin/phpcs src tests -ps --standard=vendor/zenify/coding-standard/src/ZenifyCodingStandard/ruleset.xml"
 	}
 }
