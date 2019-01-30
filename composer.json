@@ -24,12 +24,14 @@
 	},
 	"autoload": {
 		"psr-4": {
-			"balicekt\\DoctrineBehaviors\\": "src"
+			"Zenify\\DoctrineBehaviors\\": "src",
+			"Clear01\\DoctrineBehaviors\\": "src",
+			"Balicekt\\DoctrineBehaviors\\": "src"
 		}
 	},
 	"autoload-dev": {
 		"psr-4": {
-			"balicekt\\DoctrineBehaviors\\Tests\\": "tests"
+			"Zenify\\DoctrineBehaviors\\": "tests"
 		}
 	}
 }
